@@ -136,7 +136,7 @@ func create(context *cli.Context) {
 	sources = append(sources, extSources...)
 
 	var pkgs []string
-	if pkgs, err = urnsToPackages(urns, "source/offical.json", "source/third_party.json"); err != nil {
+	if pkgs, err = urnsToPackages(urns, sources...); err != nil {
 		return
 	}
 
