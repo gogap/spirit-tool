@@ -71,6 +71,9 @@ func commandCreate(action cliAction) cli.Command {
 			}, cli.StringSliceFlag{
 				Name:  "args, a",
 				Usage: "the args will pass into template, format: -a key=val, you could use `args.key` to get value",
+			}, cli.BoolFlag{
+				Name:  "force, f",
+				Usage: "is your app is exist, it will overwrite it",
 			},
 		},
 	}

@@ -70,14 +70,20 @@ func create(context *cli.Context) {
 	}
 
 	appPath := fmt.Sprintf("%s/%s", goSrc, appDir)
-	if _, e := os.Stat(appPath); e != nil {
-		if !os.IsNotExist(e) {
-			err = e
+
+	forceWrite := context.Bool("force")
+	if !forceWrite {
+		if _, e := os.Stat(appPath); e != nil {
+			if !os.IsNotExist(e) {
+				err = e
+				return
+			}
+		} else {
+			err = fmt.Errorf("your project path %s already exist", appPath)
 			return
 		}
 	} else {
-		err = fmt.Errorf("your project path %s already exist", appPath)
-		return
+		spirit.Logger().Warnf("project path %s already exist, it will be overwrite", appPath)
 	}
 
 	configFile := context.String("config")
@@ -185,7 +191,10 @@ func create(context *cli.Context) {
 	spirit.Logger().Infof("new app create at %s", appPath)
 
 	if err = os.MkdirAll(appPath, os.FileMode(0755)); err != nil {
-		return
+		if !forceWrite {
+			return
+		}
+		err = nil
 	}
 
 	srcPath := path.Join(appPath, "main.go")
