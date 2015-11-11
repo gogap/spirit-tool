@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sync"
 
 	"github.com/gogap/spirit"
 )
@@ -63,9 +64,12 @@ func main() {
 		return
 	}
 
-	if err = sp.Start(); err != nil {
+	var wg *sync.WaitGroup
+	if wg, err = sp.Run(); err != nil {
 		return
 	}
+
+	wg.Wait()
 }
 
 var (
