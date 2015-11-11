@@ -66,5 +66,8 @@
     }, {
         "urn": "urn:spirit-contrib:receiver:http",
         "pkg": "github.com/spirit-contrib/http"
+    }, {
+        "urn": "urn:spirit-contrib:io:pool:writer:http",
+        "pkg": "github.com/spirit-contrib/http"
     }]
 }

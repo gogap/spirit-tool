@@ -153,7 +153,7 @@ func create(context *cli.Context) {
 		if updatePkg {
 			spirit.Logger().Infof("downloading %d packages (go get -u) ...", len(pkgs))
 		} else {
-			spirit.Logger().Info("downloading %d packages (go get) ...", len(pkgs))
+			spirit.Logger().Infof("downloading %d packages (go get) ...", len(pkgs))
 		}
 
 		getPackages(updatePkg, pkgs...)
@@ -232,11 +232,17 @@ func parseSpiritConfigUsingURN(conf spirit.SpiritConfig) (urns []string, err err
 	}
 
 	for _, readerPool := range conf.ReaderPools {
-		urns = append(urns, parseActorUsingURN(readerPool.ActorConfig, *readerPool.Reader)...)
+		urns = append(urns, parseActorUsingURN(readerPool.ActorConfig)...)
+		if readerPool.Reader != nil {
+			urns = append(urns, parseActorUsingURN(*readerPool.Reader)...)
+		}
 	}
 
 	for _, writerPool := range conf.WriterPools {
-		urns = append(urns, parseActorUsingURN(writerPool.ActorConfig, *writerPool.Writer)...)
+		urns = append(urns, parseActorUsingURN(writerPool.ActorConfig)...)
+		if writerPool.Writer != nil {
+			urns = append(urns, parseActorUsingURN(*writerPool.Writer)...)
+		}
 	}
 
 	return
