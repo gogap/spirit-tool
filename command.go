@@ -48,9 +48,6 @@ func commandCreate(action cliAction) cli.Command {
 				Name:  "config, c",
 				Value: "",
 				Usage: "config file",
-			}, cli.BoolFlag{
-				Name:  "inner, i",
-				Usage: "embed config content",
 			}, cli.StringFlag{
 				Name:  "path, p",
 				Value: "",
@@ -74,6 +71,39 @@ func commandCreate(action cliAction) cli.Command {
 			}, cli.BoolFlag{
 				Name:  "force, f",
 				Usage: "is your app is exist, it will overwrite it",
+			},
+		},
+	}
+}
+
+func commandRun(action cliAction) cli.Command {
+	return cli.Command{
+		Name:      "run",
+		ShortName: "",
+		Usage:     "run your spirit config directly",
+		Action:    action,
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "gopath",
+				Value: os.Getenv("GOPATH"),
+				Usage: "default gopath is get from $GOPATH",
+			}, cli.StringFlag{
+				Name:  "config, c",
+				Value: "",
+				Usage: "config file",
+			}, cli.StringFlag{
+				Name:  "template,t",
+				Value: "classic",
+				Usage: "which template to use, default is classic",
+			}, cli.BoolFlag{
+				Name:  "update, u",
+				Usage: "run `go get -u` before run",
+			}, cli.StringSliceFlag{
+				Name:  "source, s",
+				Usage: "your own source file",
+			}, cli.StringSliceFlag{
+				Name:  "args, a",
+				Usage: "the args will pass into template, format: -a key=val, you could use `args.key` to get value",
 			},
 		},
 	}

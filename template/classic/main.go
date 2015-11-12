@@ -11,12 +11,17 @@ import (
 )
 
 //<-printf "import ("->//
-//<-range $_, $pkg := .packages->////<-printf "\t_ \"%s\"\n" $pkg->////<-end->////<-printf ")"->//
+//<-range $_, $pkg := .packages->////<-printf "\t_ \"%s\"\n" $pkg.URI->////<-end->////<-printf ")"->//
 
-var configFile string //<-printf "= \"%s\"" .configFile->//
+
+const TemplateVersion = "0.0.1"
+
+const CreateTime string //<-printf "= \"%s\"" .create_time->//
+
+var configFile string //<-printf "= \"%s\"" .config_filename->//
 
 var (
-	innerConfig bool //<-printf "= %v" .innerConfig->//
+	innerConfig bool //<-printf "= %v" .args.inner_config->//
 )
 
 func main() {
@@ -73,5 +78,5 @@ func main() {
 }
 
 var (
-	config string //<-if .innerConfig->////<-printf "= `%s`" .config->////<-end->//
+	config string //<-if .args.inner_config->////<-printf "= `%s`" .config->////<-end->//
 )
