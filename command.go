@@ -71,6 +71,9 @@ func commandCreate(action cliAction) cli.Command {
 			}, cli.BoolFlag{
 				Name:  "force, f",
 				Usage: "is your app is exist, it will overwrite it",
+			}, cli.StringFlag{
+				Name:  "rev, r",
+				Usage: "packages revision config filepath, json format, e.g.: {\"github.com/gogap/spirit\":\"master\"}",
 			},
 		},
 	}
@@ -104,6 +107,9 @@ func commandRun(action cliAction) cli.Command {
 			}, cli.StringSliceFlag{
 				Name:  "args, a",
 				Usage: "the args will pass into template, format: -a key=val, you could use `args.key` to get value",
+			}, cli.StringFlag{
+				Name:  "rev, r",
+				Usage: "packages revision config filepath, json format, e.g.: {\"github.com/gogap/spirit\":\"master\"}",
 			},
 		},
 	}

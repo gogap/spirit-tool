@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -58,6 +59,7 @@ func create(context *cli.Context) {
 	strArgs := context.StringSlice("args")
 	forceWrite := context.Bool("force")
 	templateName := context.String("template")
+	revConfig := context.String("rev")
 
 	if goPath == "" {
 		err = fmt.Errorf("could not get GOPATH")
@@ -103,6 +105,11 @@ func create(context *cli.Context) {
 		return
 	}
 
+	var rev map[string]string
+	if revConfig != "" {
+		loadKeyValueJSON(revConfig, &rev)
+	}
+
 	createOpts := CreateOptions{
 		TemplateName:     templateName,
 		GoPath:           goPath,
@@ -138,6 +145,7 @@ func run(context *cli.Context) {
 	updatePkg := context.Bool("update")
 	strArgs := context.StringSlice("args")
 	templateName := context.String("template")
+	revConfig := context.String("rev")
 
 	if goPath == "" {
 		err = fmt.Errorf("could not get GOPATH")
@@ -183,6 +191,11 @@ func run(context *cli.Context) {
 		return
 	}
 
+	var rev map[string]string
+	if revConfig != "" {
+		loadKeyValueJSON(revConfig, &rev)
+	}
+
 	createOpts := CreateOptions{
 		TemplateName:     templateName,
 		GoPath:           goPath,
@@ -191,12 +204,22 @@ func run(context *cli.Context) {
 		UpdatePackages:   updatePkg,
 		ForceWrite:       true,
 		Sources:          sources,
-		PackagesRevision: nil,
+		PackagesRevision: rev,
 	}
 
 	if err = helper.RunProject(createOpts, tmplArgs); err != nil {
 		return
 	}
 
+	return
+}
+
+func loadKeyValueJSON(filename string, v *map[string]string) (err error) {
+	var revData []byte
+	if revData, err = ioutil.ReadFile(filename); err != nil {
+		return
+	} else if err = json.Unmarshal(revData, v); err != nil {
+		return
+	}
 	return
 }

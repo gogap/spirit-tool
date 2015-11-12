@@ -63,7 +63,9 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 		return
 	}
 
-	if err = p.parse(createOpts.Sources); err != nil {
+	goSrc := path.Join(createOpts.GoPath, "src")
+
+	if err = p.parse(goSrc, createOpts.Sources); err != nil {
 		return
 	}
 
@@ -75,7 +77,6 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 	}
 
 	// make project dir
-	goSrc := path.Join(createOpts.GoPath, "src")
 
 	projectPath := path.Join(goSrc, createOpts.ProjectPath)
 	if path.IsAbs(projectPath) {
@@ -197,7 +198,7 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, tmplArgs map[string]
 	return
 }
 
-func (p *SpiritHelper) parse(sources []string) (err error) {
+func (p *SpiritHelper) parse(gosrc string, sources []string) (err error) {
 	if sources == nil || len(sources) == 0 {
 		err = ErrNoURNPackageSourceFound
 		return
@@ -236,7 +237,7 @@ func (p *SpiritHelper) parse(sources []string) (err error) {
 
 	p.RefURNs = urns
 
-	if p.RefPackages, err = urnsToPackages(urns, sources...); err != nil {
+	if p.RefPackages, err = urnsToPackages(gosrc, urns, sources...); err != nil {
 		return
 	}
 
@@ -259,7 +260,7 @@ func parseActorUsingURN(actorConfs ...spirit.ActorConfig) (urns []string) {
 	return
 }
 
-func urnsToPackages(urns []string, sourceFiles ...string) (packages []Package, err error) {
+func urnsToPackages(gosrc string, urns []string, sourceFiles ...string) (packages []Package, err error) {
 	urnPkgMap := map[string]string{}
 
 	for _, sourceFile := range sourceFiles {
@@ -296,7 +297,7 @@ func urnsToPackages(urns []string, sourceFiles ...string) (packages []Package, e
 	}
 
 	for pkg, _ := range pkgs {
-		packages = append(packages, Package{URI: pkg, Revision: ""})
+		packages = append(packages, Package{gosrc: gosrc, URI: pkg, Revision: ""})
 	}
 
 	return
