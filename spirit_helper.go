@@ -192,6 +192,8 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []
 		return
 	} else if !detach {
 		cmder.Wait()
+	} else {
+		spirit.Logger().Infof("PID: %d\n", cmder.Process.Pid)
 	}
 
 	return
