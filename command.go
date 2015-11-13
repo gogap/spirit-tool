@@ -8,11 +8,11 @@ import (
 
 type cliAction func(context *cli.Context)
 
-func commandUpdate(action cliAction) cli.Command {
+func commandUpgrade(action cliAction) cli.Command {
 	return cli.Command{
-		Name:      "update",
+		Name:      "upgrade",
 		ShortName: "",
-		Usage:     "Update spirit-tool and reinstall",
+		Usage:     "Upgrade spirit-tool and reinstall",
 		Action:    action,
 	}
 }

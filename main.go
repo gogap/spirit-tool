@@ -21,9 +21,10 @@ func main() {
 	app.Name = "spirit-tool"
 	app.Authors = []cli.Author{{"zeal", "xujinzheng@gmail.com"}}
 	app.Usage = "help user easily to use spirit"
+	app.Version = "0.0.1"
 
 	app.Commands = []cli.Command{
-		//commandUpdate(update),
+		commandUpgrade(upgrade),
 		//commandFind(find),
 		commandRun(run),
 		commandCreate(create),
@@ -32,7 +33,31 @@ func main() {
 	app.Run(os.Args)
 }
 
-func update(context *cli.Context) {
+func upgrade(context *cli.Context) {
+	var err error
+
+	defer func() {
+		if err != nil {
+			spirit.Logger().Error(err)
+			os.Exit(128)
+		}
+	}()
+
+	var out []byte
+	cmd := "go get -u github.com/gogap/spirit-tool"
+	if out, err = execCommand(cmd); err != nil {
+		spirit.Logger().Errorln(err)
+		return
+	}
+	spirit.Logger().Infoln(out)
+
+	cmd = "go install github.com/gogap/spirit-tool"
+	if out, err = execCommand(cmd); err != nil {
+		spirit.Logger().Errorln(err)
+		return
+	}
+	spirit.Logger().Infoln(out)
+
 	return
 }
 
