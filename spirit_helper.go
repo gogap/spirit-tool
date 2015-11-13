@@ -8,12 +8,8 @@ import (
 	"github.com/gogap/spirit"
 	"io/ioutil"
 	"os"
-	"os/exec"
-	"os/signal"
 	"path"
 	"strings"
-	"sync"
-	"syscall"
 	"text/template"
 	"time"
 )
@@ -195,13 +191,7 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, tmplArgs map[string]
 		err = e
 		return
 	} else {
-
-		wg := sync.WaitGroup{}
-
-		wg.Add(1)
-		waitSignal(cmder, &wg)
-
-		wg.Wait()
+		cmder.Wait()
 	}
 
 	return
@@ -310,43 +300,4 @@ func urnsToPackages(gosrc string, urns []string, sourceFiles ...string) (package
 	}
 
 	return
-}
-
-func waitSignal(cmd *exec.Cmd, wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	isStopping := false
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
-
-	pid := cmd.Process.Pid
-
-	for {
-		select {
-		case signal := <-interrupt:
-			{
-				switch signal {
-				case os.Interrupt, syscall.SIGTERM:
-					{
-						if isStopping {
-							killProcess(pid)
-							spirit.Logger().Infof("kill process, pid: %d\n", pid)
-							return
-						}
-
-						isStopping = true
-						spirit.Logger().Infof("stop process, pid: %d\n", pid)
-
-						cmd.Wait()
-
-						return
-					}
-				}
-			}
-		case <-time.After(time.Second):
-			{
-				continue
-			}
-		}
-	}
 }
