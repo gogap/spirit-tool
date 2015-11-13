@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path"
+	"strings"
 	"sync"
 	"syscall"
 	"text/template"
@@ -77,22 +78,25 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 	}
 
 	// make project dir
-
 	projectPath := path.Join(goSrc, createOpts.ProjectPath)
-	if path.IsAbs(projectPath) {
+	if path.IsAbs(createOpts.ProjectPath) {
 		projectPath = createOpts.ProjectPath
 	}
 
-	if _, e := os.Stat(projectPath); e != nil {
-		if !os.IsNotExist(e) {
+	if fi, e := os.Stat(projectPath); e != nil {
+		if !strings.Contains(e.Error(), "no such file or directory") &&
+			!os.IsNotExist(e) {
 			err = e
 			return
-		} else if createOpts.ForceWrite {
-			spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
-		} else {
-			err = fmt.Errorf("your project path %s already exist", projectPath)
-			return
 		}
+	} else if !fi.IsDir() {
+		err = fmt.Errorf("your project path %s already exist, but it is not a directory", projectPath)
+		return
+	} else if createOpts.ForceWrite {
+		spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
+	} else {
+		err = fmt.Errorf("your project path %s already exist", projectPath)
+		return
 	}
 
 	if err = os.MkdirAll(projectPath, os.FileMode(0755)); err != nil {
@@ -153,7 +157,12 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 		return
 	}
 
-	execCommand("go fmt " + srcPath)
+	// format code for sort import packages order
+	if _, err = execCommand("go fmt " + srcPath); err != nil {
+		return
+	}
+
+	spirit.Logger().Infof("project created at %s\n", projectPath)
 
 	return
 }
