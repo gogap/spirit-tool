@@ -289,7 +289,8 @@ func urnsToPackages(gosrc string, urns []string, sourceFiles ...string) (package
 
 	for _, urn := range urns {
 		if pkg, exist := urnPkgMap[urn]; !exist {
-			err = fmt.Errorf("urn of %s not exist", urn)
+			err = fmt.Errorf("no package from any source of urn: %s", urn)
+			return
 		} else {
 			pkgs[pkg] = true
 		}
