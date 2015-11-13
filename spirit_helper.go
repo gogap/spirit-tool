@@ -177,7 +177,7 @@ func (p *SpiritHelper) GetPackages(pkgRevision map[string]string, update bool) (
 	return
 }
 
-func (p *SpiritHelper) RunProject(createOpts CreateOptions, tmplArgs map[string]interface{}) (err error) {
+func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []string, tmplArgs map[string]interface{}) (err error) {
 
 	if err = p.CreateProject(createOpts, tmplArgs); err != nil {
 		return
@@ -187,10 +187,10 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, tmplArgs map[string]
 		return
 	}
 
-	if cmder, e := execute(path.Join(createOpts.ProjectPath, "main"), createOpts.ProjectPath); e != nil {
+	if cmder, e := execute(path.Join(createOpts.ProjectPath, "main"), createOpts.ProjectPath, !detach, envs); e != nil {
 		err = e
 		return
-	} else {
+	} else if !detach {
 		cmder.Wait()
 	}
 

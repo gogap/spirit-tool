@@ -110,6 +110,12 @@ func commandRun(action cliAction) cli.Command {
 			}, cli.StringFlag{
 				Name:  "rev, r",
 				Usage: "packages revision config filepath, json format, e.g.: {\"github.com/gogap/spirit\":\"master\"}",
+			}, cli.BoolFlag{
+				Name:  "detach, d",
+				Usage: "Run spirit in background and print PID",
+			}, cli.StringSliceFlag{
+				Name:  "env, e",
+				Usage: "Set environment variables",
 			},
 		},
 	}

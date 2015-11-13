@@ -171,6 +171,8 @@ func run(context *cli.Context) {
 	strArgs := context.StringSlice("args")
 	templateName := context.String("template")
 	revConfig := context.String("rev")
+	detach := context.Bool("detach")
+	envs := context.StringSlice("env")
 
 	if goPath == "" {
 		err = fmt.Errorf("could not get GOPATH")
@@ -232,7 +234,7 @@ func run(context *cli.Context) {
 		PackagesRevision: rev,
 	}
 
-	if err = helper.RunProject(createOpts, tmplArgs); err != nil {
+	if err = helper.RunProject(createOpts, detach, envs, tmplArgs); err != nil {
 		return
 	}
 
