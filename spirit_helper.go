@@ -322,20 +322,20 @@ func waitSignal(cmd *exec.Cmd, wg *sync.WaitGroup) {
 						if isStopping {
 							killProcess(pid)
 							spirit.Logger().Infof("kill process, pid: %d\n", pid)
-
 							return
 						}
 
 						isStopping = true
 						spirit.Logger().Infof("stop process, pid: %d\n", pid)
+
+						cmd.Wait()
+
+						return
 					}
 				}
 			}
 		case <-time.After(time.Second):
 			{
-				if !isProcessAlive(pid) {
-					return
-				}
 				continue
 			}
 		}

@@ -60,11 +60,3 @@ func stopProcess(pid int) (err error) {
 	err = syscall.Kill(pid, syscall.SIGTERM)
 	return
 }
-
-func isProcessAlive(pid int) bool {
-	p, _ := os.FindProcess(pid)
-	if e := p.Signal(syscall.Signal(0)); e == nil {
-		return true
-	}
-	return false
-}
