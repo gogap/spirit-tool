@@ -14,6 +14,12 @@ func commandUpgrade(action cliAction) cli.Command {
 		ShortName: "",
 		Usage:     "Upgrade spirit-tool and reinstall",
 		Action:    action,
+		Flags: []cli.Flag{
+			cli.IntFlag{
+				Name:  "verbosity, v",
+				Usage: "How much troubleshooting info to print (0~5)",
+			},
+		},
 	}
 }
 

@@ -41,6 +41,9 @@ func main() {
 }
 
 func upgrade(context *cli.Context) {
+	verbosity = context.Int("verbosity")
+	spirit.Logger().Level = logrus.Level(verbosity)
+
 	var err error
 
 	defer func() {
@@ -52,6 +55,9 @@ func upgrade(context *cli.Context) {
 
 	var out []byte
 	cmd := "go get -u github.com/gogap/spirit-tool"
+	if verbosity > 0 {
+		cmd = "go get -v -u github.com/gogap/spirit-tool"
+	}
 	if out, err = execCommand(cmd); err != nil {
 		spirit.Logger().Errorln(err)
 		return
@@ -59,6 +65,9 @@ func upgrade(context *cli.Context) {
 	spirit.Logger().Infoln(out)
 
 	cmd = "go install github.com/gogap/spirit-tool"
+	if verbosity > 0 {
+		cmd = "go install -v github.com/gogap/spirit-tool"
+	}
 	if out, err = execCommand(cmd); err != nil {
 		spirit.Logger().Errorln(err)
 		return
