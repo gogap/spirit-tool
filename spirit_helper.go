@@ -84,14 +84,14 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 			!os.IsNotExist(e) {
 			err = e
 			return
+		} else if createOpts.ForceWrite {
+			spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
+		} else {
+			err = fmt.Errorf("your project path %s already exist", projectPath)
+			return
 		}
 	} else if !fi.IsDir() {
 		err = fmt.Errorf("your project path %s already exist, but it is not a directory", projectPath)
-		return
-	} else if createOpts.ForceWrite {
-		spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
-	} else {
-		err = fmt.Errorf("your project path %s already exist", projectPath)
 		return
 	}
 
@@ -177,13 +177,26 @@ func (p *SpiritHelper) GetPackages(pkgRevision map[string]string, update bool) (
 	return
 }
 
-func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []string, tmplArgs map[string]interface{}) (err error) {
+func (p *SpiritHelper) BuildProject(createOpts CreateOptions, name string, tmplArgs map[string]interface{}) (err error) {
 
 	if err = p.CreateProject(createOpts, tmplArgs); err != nil {
 		return
 	}
 
-	if _, err = execCommandWithDir("go build -o main "+path.Join(createOpts.ProjectPath, "main.go"), createOpts.ProjectPath); err != nil {
+	cmd := "go build -o "
+	if verbosity > 0 {
+		cmd = "go build -v -o "
+	}
+
+	if _, err = execCommandWithDir(cmd+name+" "+path.Join(createOpts.ProjectPath, "main.go"), createOpts.ProjectPath); err != nil {
+		return
+	}
+
+	return
+}
+
+func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []string, tmplArgs map[string]interface{}) (err error) {
+	if err = p.BuildProject(createOpts, "main", tmplArgs); err != nil {
 		return
 	}
 

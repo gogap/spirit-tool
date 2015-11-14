@@ -11,9 +11,15 @@ type Package struct {
 }
 
 func (p *Package) Get(update bool) (err error) {
-	cmd := "go get -v " + p.URI
+
+	baseCMD := "go get "
+	if verbosity > 0 {
+		baseCMD = "go get -v "
+	}
+
+	cmd := baseCMD + p.URI
 	if update {
-		cmd = "go get -u -v " + p.URI
+		cmd = baseCMD + "-u " + p.URI
 	}
 
 	if _, err = execCommand(cmd); err != nil {

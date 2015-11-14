@@ -74,6 +74,9 @@ func commandCreate(action cliAction) cli.Command {
 			}, cli.StringFlag{
 				Name:  "rev, r",
 				Usage: "packages revision config filepath, json format, e.g.: {\"github.com/gogap/spirit\":\"master\"}",
+			}, cli.IntFlag{
+				Name:  "verbosity, v",
+				Usage: "How much troubleshooting info to print (0~5)",
 			},
 		},
 	}
@@ -116,6 +119,51 @@ func commandRun(action cliAction) cli.Command {
 			}, cli.StringSliceFlag{
 				Name:  "env, e",
 				Usage: "Set environment variables",
+			}, cli.IntFlag{
+				Name:  "verbosity, v",
+				Usage: "How much troubleshooting info to print (0~5)",
+			},
+		},
+	}
+}
+
+func commandBuild(action cliAction) cli.Command {
+	return cli.Command{
+		Name:      "build",
+		ShortName: "",
+		Usage:     "build your spirit with config",
+		Action:    action,
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "gopath",
+				Value: os.Getenv("GOPATH"),
+				Usage: "default gopath is get from $GOPATH",
+			}, cli.StringFlag{
+				Name:  "config, c",
+				Value: "",
+				Usage: "config file",
+			}, cli.StringFlag{
+				Name:  "template,t",
+				Value: "classic",
+				Usage: "which template to use, default is classic",
+			}, cli.BoolFlag{
+				Name:  "update, u",
+				Usage: "run `go get -u` before build",
+			}, cli.StringSliceFlag{
+				Name:  "source, s",
+				Usage: "your own source file",
+			}, cli.StringSliceFlag{
+				Name:  "args, a",
+				Usage: "the args will pass into template, format: -a key=val, you could use `args.key` to get value",
+			}, cli.StringFlag{
+				Name:  "rev, r",
+				Usage: "packages revision config filepath, json format, e.g.: {\"github.com/gogap/spirit\":\"master\"}",
+			}, cli.StringFlag{
+				Name:  "output, o",
+				Usage: "the binary output path",
+			}, cli.IntFlag{
+				Name:  "verbosity, v",
+				Usage: "How much troubleshooting info to print (0~5)",
 			},
 		},
 	}

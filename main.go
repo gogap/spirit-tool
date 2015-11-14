@@ -6,14 +6,20 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/gogap/spirit"
 )
 
 var (
 	app *cli.App
+)
+
+var (
+	verbosity = 0
 )
 
 func main() {
@@ -28,6 +34,7 @@ func main() {
 		//commandFind(find),
 		commandRun(run),
 		commandCreate(create),
+		commandBuild(build),
 	}
 
 	app.Run(os.Args)
@@ -66,6 +73,9 @@ func find(context *cli.Context) {
 }
 
 func create(context *cli.Context) {
+	verbosity = context.Int("verbosity")
+	spirit.Logger().Level = logrus.Level(verbosity)
+
 	var err error
 
 	defer func() {
@@ -154,6 +164,9 @@ func create(context *cli.Context) {
 }
 
 func run(context *cli.Context) {
+	verbosity = context.Int("verbosity")
+	spirit.Logger().Level = logrus.Level(verbosity)
+
 	var err error
 
 	defer func() {
@@ -235,6 +248,101 @@ func run(context *cli.Context) {
 	}
 
 	if err = helper.RunProject(createOpts, detach, envs, tmplArgs); err != nil {
+		return
+	}
+
+	return
+}
+
+func build(context *cli.Context) {
+	verbosity = context.Int("verbosity")
+	spirit.Logger().Level = logrus.Level(verbosity)
+
+	var err error
+
+	defer func() {
+		if err != nil {
+			spirit.Logger().Error(err)
+			os.Exit(128)
+		}
+	}()
+
+	goPath := context.String("gopath")
+	configFile := context.String("config")
+	extSources := context.StringSlice("source")
+
+	updatePkg := context.Bool("update")
+	strArgs := context.StringSlice("args")
+	templateName := context.String("template")
+	revConfig := context.String("rev")
+	output := context.String("output")
+
+	if goPath == "" {
+		err = fmt.Errorf("could not get GOPATH")
+		return
+	}
+
+	spirit.Logger().Infof("GOPATH: %s", goPath)
+
+	if configFile == "" {
+		err = fmt.Errorf("please input config file")
+		return
+	}
+
+	sources := []string{
+		path.Join(goPath, "src", "github.com/gogap/spirit-tool/source/offical.json"),
+		path.Join(goPath, "src", "github.com/gogap/spirit-tool/source/third_party.json"),
+	}
+
+	sources = append(sources, extSources...)
+
+	tmplArgs := map[string]interface{}{}
+
+	for _, arg := range strArgs {
+		arg = strings.TrimSpace(arg)
+		if arg != "" {
+			v := strings.Split(arg, "=")
+			if len(v) != 2 {
+				err = fmt.Errorf("the args to template format error, arg: %s", arg)
+				return
+			}
+			tmplArgs[v[0]] = v[1]
+		}
+	}
+
+	helper := SpiritHelper{}
+
+	if err = helper.LoadSpiritConfig(configFile); err != nil {
+		return
+	}
+
+	tmpDir := ""
+	if tmpDir, err = ioutil.TempDir("", "spirit-tool."); err != nil {
+		return
+	}
+
+	var rev map[string]string
+	if revConfig != "" {
+		loadKeyValueJSON(revConfig, &rev)
+	}
+
+	createOpts := CreateOptions{
+		TemplateName:     templateName,
+		GoPath:           goPath,
+		ProjectPath:      tmpDir,
+		GetPackages:      true,
+		UpdatePackages:   updatePkg,
+		ForceWrite:       true,
+		Sources:          sources,
+		PackagesRevision: rev,
+	}
+
+	if !path.IsAbs(output) {
+		fp, _ := filepath.Abs(os.Args[0])
+		output = path.Join(path.Dir(fp), output)
+	}
+
+	if err = helper.BuildProject(createOpts, output, tmplArgs); err != nil {
 		return
 	}
 
