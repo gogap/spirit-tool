@@ -84,14 +84,14 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 			!os.IsNotExist(e) {
 			err = e
 			return
-		} else if createOpts.ForceWrite {
-			spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
-		} else {
-			err = fmt.Errorf("your project path %s already exist", projectPath)
-			return
 		}
 	} else if !fi.IsDir() {
 		err = fmt.Errorf("your project path %s already exist, but it is not a directory", projectPath)
+		return
+	} else if createOpts.ForceWrite {
+		spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
+	} else {
+		err = fmt.Errorf("your project path %s already exist", projectPath)
 		return
 	}
 

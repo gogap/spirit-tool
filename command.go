@@ -17,7 +17,7 @@ func commandUpgrade(action cliAction) cli.Command {
 		Flags: []cli.Flag{
 			cli.IntFlag{
 				Name:  "verbosity, v",
-				Usage: "How much troubleshooting info to print (0~5)",
+				Usage: "How much troubleshooting info to print (1~5)",
 			},
 		},
 	}
@@ -82,7 +82,7 @@ func commandCreate(action cliAction) cli.Command {
 				Usage: "packages revision config filepath, json format, e.g.: {\"github.com/gogap/spirit\":\"master\"}",
 			}, cli.IntFlag{
 				Name:  "verbosity, v",
-				Usage: "How much troubleshooting info to print (0~5)",
+				Usage: "How much troubleshooting info to print (1~5)",
 			},
 		},
 	}
@@ -127,7 +127,7 @@ func commandRun(action cliAction) cli.Command {
 				Usage: "Set environment variables",
 			}, cli.IntFlag{
 				Name:  "verbosity, v",
-				Usage: "How much troubleshooting info to print (0~5)",
+				Usage: "How much troubleshooting info to print (1~5)",
 			},
 		},
 	}
@@ -169,7 +169,7 @@ func commandBuild(action cliAction) cli.Command {
 				Usage: "the binary output path",
 			}, cli.IntFlag{
 				Name:  "verbosity, v",
-				Usage: "How much troubleshooting info to print (0~5)",
+				Usage: "How much troubleshooting info to print (1~5)",
 			},
 		},
 	}

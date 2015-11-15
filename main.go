@@ -42,6 +42,11 @@ func main() {
 
 func upgrade(context *cli.Context) {
 	verbosity = context.Int("verbosity")
+	if !context.IsSet("verbosity") {
+		if verbosity < 2 {
+			verbosity = 2
+		}
+	}
 	spirit.Logger().Level = logrus.Level(verbosity)
 
 	var err error
@@ -83,6 +88,12 @@ func find(context *cli.Context) {
 
 func create(context *cli.Context) {
 	verbosity = context.Int("verbosity")
+	if !context.IsSet("verbosity") {
+		if verbosity < 2 {
+			verbosity = 2
+		}
+	}
+
 	spirit.Logger().Level = logrus.Level(verbosity)
 
 	var err error
@@ -174,6 +185,11 @@ func create(context *cli.Context) {
 
 func run(context *cli.Context) {
 	verbosity = context.Int("verbosity")
+	if !context.IsSet("verbosity") {
+		if verbosity < 2 {
+			verbosity = 2
+		}
+	}
 	spirit.Logger().Level = logrus.Level(verbosity)
 
 	var err error
@@ -265,6 +281,11 @@ func run(context *cli.Context) {
 
 func build(context *cli.Context) {
 	verbosity = context.Int("verbosity")
+	if !context.IsSet("verbosity") {
+		if verbosity < 2 {
+			verbosity = 2
+		}
+	}
 	spirit.Logger().Level = logrus.Level(verbosity)
 
 	var err error
