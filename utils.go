@@ -46,7 +46,7 @@ func execute(cmd string, dir string, bindSTD bool, envs []string) (cmder *exec.C
 		commander.Stdout = os.Stdout
 	}
 
-	commander.Env = envs
+	commander.Env = append(os.Environ(), envs...)
 
 	if err = commander.Start(); err != nil {
 		return

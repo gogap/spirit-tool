@@ -2,6 +2,8 @@ package main
 
 import (
 	"path"
+
+	"github.com/gogap/spirit"
 )
 
 type Package struct {
@@ -22,7 +24,10 @@ func (p *Package) Get(update bool) (err error) {
 		cmd = baseCMD + "-u " + p.URI
 	}
 
-	if _, err = execCommand(cmd); err != nil {
+	var out []byte
+
+	if out, err = execCommand(cmd); err != nil {
+		spirit.Logger().Errorln(string(out))
 		return
 	}
 
@@ -32,7 +37,8 @@ func (p *Package) Get(update bool) (err error) {
 
 	checkoutCMD := "git -C " + path.Join(p.gosrc, p.URI) + " checkout " + p.Revision
 
-	if _, err = execCommand(checkoutCMD); err != nil {
+	if out, err = execCommand(checkoutCMD); err != nil {
+		spirit.Logger().Errorln(string(out))
 		return
 	}
 

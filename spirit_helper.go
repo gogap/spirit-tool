@@ -188,7 +188,9 @@ func (p *SpiritHelper) BuildProject(createOpts CreateOptions, name string, tmplA
 		cmd = "go build -v -o "
 	}
 
-	if _, err = execCommandWithDir(cmd+name+" "+path.Join(createOpts.ProjectPath, "main.go"), createOpts.ProjectPath); err != nil {
+	var out []byte
+	if out, err = execCommandWithDir(cmd+name+" "+path.Join(createOpts.ProjectPath, "main.go"), createOpts.ProjectPath); err != nil {
+		spirit.Logger().Errorln(string(out))
 		return
 	}
 
