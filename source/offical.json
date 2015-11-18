@@ -64,10 +64,10 @@
         "urn": "urn:spirit:translator:out:lines",
         "pkg": "github.com/gogap/spirit/translator/lines"
     }, {
-        "urn": "urn:spirit-contrib:receiver:http",
-        "pkg": "github.com/spirit-contrib/http"
+        "urn": "urn:spirit-contrib:receiver:http:json_api",
+        "pkg": "github.com/spirit-contrib/http_json_api"
     }, {
-        "urn": "urn:spirit-contrib:io:pool:writer:http",
+        "urn": "urn:spirit-contrib:sender:http",
         "pkg": "github.com/spirit-contrib/http"
     }]
 }
