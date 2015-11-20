@@ -68,7 +68,7 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 
 	// download packages
 	if createOpts.GetPackages {
-		if err = p.GetPackages(createOpts.PackagesRevision, createOpts.UpdatePackages); err != nil {
+		if err = p.GetPackages(goSrc, createOpts.PackagesRevision, createOpts.UpdatePackages); err != nil {
 			return
 		}
 	}
@@ -163,17 +163,36 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 	return
 }
 
-func (p *SpiritHelper) GetPackages(pkgRevision map[string]string, update bool) (err error) {
+func (p *SpiritHelper) GetPackages(gosrc string, pkgRevision map[string]string, update bool) (err error) {
+
+	existPkg := make(map[string]bool)
+
 	for _, pkg := range p.RefPackages {
 		if pkgRevision != nil {
 			if revision, exist := pkgRevision[pkg.URI]; exist {
 				pkg.Revision = revision
 			}
+			existPkg[pkg.URI] = true
 		}
 		if err = pkg.Get(update); err != nil {
 			return
 		}
 	}
+
+	if pkgRevision != nil {
+		for uri, revision := range pkgRevision {
+			if _, exist := existPkg[uri]; !exist {
+
+				pkg := Package{gosrc, uri, revision}
+				p.RefPackages = append(p.RefPackages, pkg)
+
+				if err = pkg.Get(update); err != nil {
+					return
+				}
+			}
+		}
+	}
+
 	return
 }
 
