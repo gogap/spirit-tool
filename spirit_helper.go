@@ -206,7 +206,14 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []
 		err = e
 		return
 	} else if !detach {
-		cmder.Wait()
+		startSigHandlers()
+		go func() {
+			cmder.Wait()
+			close(subProcExited)
+			close(interrupted)
+		}()
+		<-subProcExited
+		<-interrupted
 	} else {
 		spirit.Logger().Infof("PID: %d\n", cmder.Process.Pid)
 	}

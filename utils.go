@@ -44,6 +44,7 @@ func execute(cmd string, dir string, bindSTD bool, envs []string) (cmder *exec.C
 	if bindSTD {
 		commander.Stderr = os.Stderr
 		commander.Stdout = os.Stdout
+		commander.Stdin = os.Stdin
 	}
 
 	commander.Env = append(os.Environ(), envs...)
