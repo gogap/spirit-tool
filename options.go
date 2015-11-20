@@ -19,6 +19,7 @@ type CreateOptions struct {
 	ForceWrite       bool
 	Sources          []string
 	PackagesRevision map[string]string
+	IsTempPath       bool
 }
 
 func (p *CreateOptions) Validate() (err error) {

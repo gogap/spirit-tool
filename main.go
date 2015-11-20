@@ -270,6 +270,7 @@ func run(context *cli.Context) {
 		ForceWrite:       true,
 		Sources:          sources,
 		PackagesRevision: rev,
+		IsTempPath:       true,
 	}
 
 	if err = helper.RunProject(createOpts, detach, envs, tmplArgs); err != nil {

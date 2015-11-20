@@ -79,20 +79,22 @@ func (p *SpiritHelper) CreateProject(createOpts CreateOptions, tmplArgs map[stri
 		projectPath = createOpts.ProjectPath
 	}
 
-	if fi, e := os.Stat(projectPath); e != nil {
-		if !strings.Contains(e.Error(), "no such file or directory") &&
-			!os.IsNotExist(e) {
-			err = e
+	if !createOpts.IsTempPath {
+		if fi, e := os.Stat(projectPath); e != nil {
+			if !strings.Contains(e.Error(), "no such file or directory") &&
+				!os.IsNotExist(e) {
+				err = e
+				return
+			}
+		} else if !fi.IsDir() {
+			err = fmt.Errorf("your project path %s already exist, but it is not a directory", projectPath)
+			return
+		} else if createOpts.ForceWrite {
+			spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
+		} else {
+			err = fmt.Errorf("your project path %s already exist", projectPath)
 			return
 		}
-	} else if !fi.IsDir() {
-		err = fmt.Errorf("your project path %s already exist, but it is not a directory", projectPath)
-		return
-	} else if createOpts.ForceWrite {
-		spirit.Logger().Warnf("project path %s already exist, it will be overwrite", projectPath)
-	} else {
-		err = fmt.Errorf("your project path %s already exist", projectPath)
-		return
 	}
 
 	if err = os.MkdirAll(projectPath, os.FileMode(0755)); err != nil {
@@ -235,6 +237,10 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []
 		<-interrupted
 	} else {
 		spirit.Logger().Infof("PID: %d\n", cmder.Process.Pid)
+	}
+
+	if createOpts.IsTempPath {
+		err = os.RemoveAll(createOpts.ProjectPath)
 	}
 
 	return
