@@ -239,7 +239,7 @@ func (p *SpiritHelper) RunProject(createOpts CreateOptions, detach bool, envs []
 		spirit.Logger().Infof("PID: %d\n", cmder.Process.Pid)
 	}
 
-	if createOpts.IsTempPath {
+	if createOpts.IsTempPath && !detach {
 		err = os.RemoveAll(createOpts.ProjectPath)
 	}
 
