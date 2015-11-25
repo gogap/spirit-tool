@@ -7,21 +7,24 @@ import (
 	"os"
 	"sync"
 
+	"github.com/gogap/env_json"
 	"github.com/gogap/spirit"
 )
 
 //<-printf "import ("->//
 //<-range $_, $pkg := .packages->////<-printf "\t_ \"%s\"\n" $pkg.URI->////<-end->////<-printf ")"->//
 
-
 const TemplateVersion = "0.0.1"
 
-const CreateTime string //<-printf "= \"%s\"" .create_time->//
+const CreateTime = `//<-printf "%s" .create_time->//`
 
 var configFile string //<-printf "= \"%s\"" .config_filename->//
 
 var (
 	innerConfig bool //<-printf "= %v" .args.inner_config->//
+
+	envJsonKey string //<-printf "= \"%v\"" .args.env_json_key->//
+	envJsonExt string //<-printf "= \"%v\"" .args.env_json_ext->//
 )
 
 func main() {
@@ -49,8 +52,15 @@ func main() {
 
 	spiritConf := spirit.SpiritConfig{}
 
-	if err = json.Unmarshal([]byte(config), &spiritConf); err != nil {
-		return
+	if envJsonKey != "" && os.Getenv(envJsonKey) != "" {
+		envJson := env_json.NewEnvJson(envJsonKey, envJsonExt)
+		if err = envJson.Unmarshal([]byte(config), &spiritConf); err != nil {
+			return
+		}
+	} else {
+		if err = json.Unmarshal([]byte(config), &spiritConf); err != nil {
+			return
+		}
 	}
 
 	if err = spiritConf.Validate(); err != nil {

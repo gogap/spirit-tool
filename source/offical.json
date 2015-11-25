@@ -4,9 +4,6 @@
         "urn": "urn:spirit:component:encoding:base64",
         "pkg": "github.com/gogap/spirit/component/encoding/base64"
     }, {
-        "urn": "urn:spirit:component:encoding:mns",
-        "pkg": "github.com/gogap/spirit/component/encoding/mns"
-    }, {
         "urn": "urn:spirit:component:encoding:json",
         "pkg": "github.com/gogap/spirit/component/encoding/json"
     }, {
@@ -15,12 +12,6 @@
     }, {
         "urn": "urn:spirit:inbox:classic",
         "pkg": "github.com/gogap/spirit/inbox/classic"
-    }, {
-        "urn": "urn:spirit:io:reader:mns",
-        "pkg": "github.com/gogap/spirit/io/mns"
-    }, {
-        "urn": "urn:spirit:io:writer:mns",
-        "pkg": "github.com/gogap/spirit/io/mns"
     }, {
         "urn": "urn:spirit:io:reader:std",
         "pkg": "github.com/gogap/spirit/io/std"
@@ -72,5 +63,17 @@
     }, {
         "urn": "urn:spirit-contrib:sender:http",
         "pkg": "github.com/spirit-contrib/http"
+    }, {
+        "urn": "urn:spirit-contrib:io:reader:mns",
+        "pkg": "github.com/spirit-contrib/mns"
+    }, {
+        "urn": "urn:spirit-contrib:io:writer:mns",
+        "pkg": "github.com/spirit-contrib/mns"
+    }, {
+        "urn": "urn:spirit-contrib:sender:mns",
+        "pkg": "github.com/spirit-contrib/mns"
+    }, {
+        "urn": "urn:spirit-contrib:component:encoding:mns",
+        "pkg": "github.com/spirit-contrib/mns"
     }]
 }

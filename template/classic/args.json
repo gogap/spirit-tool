@@ -1,3 +1,5 @@
 {
-	"inner_config":	false
+	"inner_config":	false,
+	"env_json_key":"SPIRIT_ENV",
+	"env_json_ext":".env"
 }
