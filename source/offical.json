@@ -43,6 +43,9 @@
         "urn": "urn:spirit:router:classic",
         "pkg": "github.com/gogap/spirit/router/classic"
     }, {
+        "urn": "urn:spirit:messenger:classic",
+        "pkg": "github.com/gogap/spirit/messenger/classic"
+    }, {
         "urn": "urn:spirit:sender:polling",
         "pkg": "github.com/gogap/spirit/sender/polling"
     }, {

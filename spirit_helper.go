@@ -265,6 +265,7 @@ func (p *SpiritHelper) parse(gosrc string, sources []string) (err error) {
 		p.conf.Components,
 		p.conf.LabelMatchers,
 		p.conf.URNRewriters,
+		p.conf.Messengers,
 	); err != nil {
 		return
 	}
